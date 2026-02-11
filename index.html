@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	  <head>
+			<meta charset="UTF-8">
+			<title>Mini Chat Firebase</title>
+	  </head>
+	  <body>
+			<h1>Mini Chat Firebase</h1>
+
+			<!-- Zone d'authentification -->
+			<div id="auth">
+				  <input type="email" id="email" placeholder="Email">
+				  <input type="password" id="password" placeholder="Mot de passe">
+				  <button id="signup">S'inscrire</button>
+				  <button id="login">Se connecter</button>
+				  <button id="logout" style="display:none;">Se déconnecter</button>
+			</div>
+
+			<!-- Zone de publication (visible seulement connecté) -->
+			<div id="post" style="display:none;">
+				  <input type="text" id="message" placeholder="Votre message">
+				  <button id="send">Envoyer</button>
+			</div>
+
+			<!-- Zone d'affichage des messages -->
+			<ul id="messages"></ul>
+
+			<!-- SDK Firebase + app.js -->
+			<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+			<script src="app.js"></script>
+	  </body>
+</html>
