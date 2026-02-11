@@ -8,7 +8,7 @@
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
-        background-color: #f0e0d6; /* fond "4chan" */
+        background-color: #f0e0d6;
       }
 
       .top-bar {
@@ -122,6 +122,52 @@
         border-bottom: 1px solid #ddd;
         background-color: #ffffee;
       }
+
+      .user-info {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #004000;
+      }
+
+      .reply-info {
+        margin-top: 6px;
+        font-size: 11px;
+        color: #555;
+      }
+
+      .reply-info button {
+        margin-left: 8px;
+        font-size: 11px;
+      }
+
+      .msg-header {
+        font-weight: bold;
+        margin-bottom: 2px;
+        font-size: 12px;
+      }
+
+      .msg-meta {
+        font-size: 10px;
+        color: #777;
+        margin-left: 4px;
+      }
+
+      .msg-text {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      .msg-actions button {
+        font-size: 11px;
+        padding: 2px 6px;
+        border: 1px solid #b7c5d9;
+        background-color: #e0eaf8;
+        cursor: pointer;
+      }
+
+      .msg-actions button:hover {
+        background-color: #d6e0f0;
+      }
     </style>
   </head>
   <body>
@@ -130,47 +176,59 @@
     </div>
 
     <div class="wrapper">
-      <!-- Zone d'authentification -->
+
       <div class="panel" id="auth">
         <h1>Login / Signup</h1>
 
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Email" />
+        <div id="authForm">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Email" />
+          </div>
+
+          <div class="field">
+            <label for="password">Mot de passe</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Mot de passe"
+            />
+          </div>
+
+          <div class="field">
+            <label for="pseudo">Pseudo</label>
+            <input type="text" id="pseudo" placeholder="Pseudo (affiché)" />
+          </div>
+
+          <div class="buttons">
+            <button id="signup">S'inscrire</button>
+            <button id="login">Se connecter</button>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="password">Mot de passe</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Mot de passe"
-          />
-        </div>
-
-        <div class="buttons">
-          <button id="signup">S'inscrire</button>
-          <button id="login">Se connecter</button>
-        </div>
-
+        <div id="userInfo" class="user-info">Non connecté.</div>
         <button id="logout">Se déconnecter</button>
       </div>
 
-      <!-- Zone de publication (visible seulement connecté) -->
+
       <div class="panel" id="post" style="display: none">
         <h1>Poster un message</h1>
         <input type="text" id="message" placeholder="Votre message" />
+        <div id="replyInfo" class="reply-info" style="display: none">
+          Répondre à <span id="replyTarget"></span>
+          <button id="cancelReply" type="button">Annuler</button>
+        </div>
         <button id="send">Envoyer</button>
       </div>
 
-      <!-- Zone d'affichage des messages -->
+
       <div class="panel">
         <h1>Messages du channel principal</h1>
         <ul id="messages"></ul>
       </div>
     </div>
 
-    <!-- SDK Firebase + app.js -->
+
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
