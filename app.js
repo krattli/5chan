@@ -1,20 +1,14 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Configuration Firebase de ton projet (console Firebase > Project settings > Web app)
 const firebaseConfig = {
   apiKey: "AIzaSyBMhtGTjtGItAjKMxKW1FHuTE4iND3qLYc",
   authDomain: "twitter-1fcd8.firebaseapp.com",
   projectId: "twitter-1fcd8",
   storageBucket: "twitter-1fcd8.firebasestorage.app",
   messagingSenderId: "410848303610",
-  appId: "1:410848303610:web:8d1666708b7c1cd48aac43"
+  appId: "1:410848303610:web:8d1666708b7c1cd48aac43",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialisation Firebase (SDK compat chargé via les <script> dans index.html)
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
@@ -31,22 +25,36 @@ const send = document.getElementById("send");
 const post = document.getElementById("post");
 const messages = document.getElementById("messages");
 
-// --- Auth Events ---
+// --- Auth Events (création de compte) ---
 signup.addEventListener("click", () => {
-  auth.createUserWithEmailAndPassword(email.value, password.value)
-    .catch(e => alert(e.message));
+  if (!email.value || !password.value) {
+    alert("Email et mot de passe obligatoires.");
+    return;
+  }
+
+  auth
+    .createUserWithEmailAndPassword(email.value, password.value)
+    .catch((e) => alert(e.message));
 });
 
+// --- Auth Events (connexion) ---
 login.addEventListener("click", () => {
-  auth.signInWithEmailAndPassword(email.value, password.value)
-    .catch(e => alert(e.message));
+  if (!email.value || !password.value) {
+    alert("Email et mot de passe obligatoires.");
+    return;
+  }
+
+  auth
+    .signInWithEmailAndPassword(email.value, password.value)
+    .catch((e) => alert(e.message));
 });
 
+// --- Déconnexion ---
 logout.addEventListener("click", () => auth.signOut());
 
 // --- Auth State ---
-auth.onAuthStateChanged(user => {
-  if(user){
+auth.onAuthStateChanged((user) => {
+  if (user) {
     post.style.display = "block";
     logout.style.display = "inline";
   } else {
@@ -57,21 +65,28 @@ auth.onAuthStateChanged(user => {
 
 // --- Envoyer un message ---
 send.addEventListener("click", () => {
-  if(message.value.trim() === "") return;
+  if (message.value.trim() === "") return;
+  if (!auth.currentUser) {
+    alert("Tu dois être connecté pour envoyer un message.");
+    return;
+  }
+
   db.collection("messages").add({
     text: message.value,
     email: auth.currentUser.email,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
   });
   message.value = "";
 });
 
 // --- Affichage temps réel ---
-db.collection("messages").orderBy("timestamp").onSnapshot(snapshot => {
-  messages.innerHTML = "";
-  snapshot.forEach(doc => {
-    const li = document.createElement("li");
-    li.textContent = `${doc.data().email}: ${doc.data().text}`;
-    messages.appendChild(li);
+db.collection("messages")
+  .orderBy("timestamp")
+  .onSnapshot((snapshot) => {
+    messages.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const li = document.createElement("li");
+      li.textContent = `${doc.data().email}: ${doc.data().text}`;
+      messages.appendChild(li);
+    });
   });
-});

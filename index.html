@@ -1,34 +1,179 @@
 <!DOCTYPE html>
-<html>
-	  <head>
-			<meta charset="UTF-8">
-			<title>Mini Chat Firebase</title>
-	  </head>
-	  <body>
-			<h1>Mini Chat Firebase</h1>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>5chan - Mini Chat Firebase</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0e0d6; /* fond "4chan" */
+      }
 
-			<!-- Zone d'authentification -->
-			<div id="auth">
-				  <input type="email" id="email" placeholder="Email">
-				  <input type="password" id="password" placeholder="Mot de passe">
-				  <button id="signup">S'inscrire</button>
-				  <button id="login">Se connecter</button>
-				  <button id="logout" style="display:none;">Se déconnecter</button>
-			</div>
+      .top-bar {
+        background-color: #88b0d8;
+        padding: 6px 10px;
+        border-bottom: 1px solid #000;
+        font-size: 12px;
+      }
 
-			<!-- Zone de publication (visible seulement connecté) -->
-			<div id="post" style="display:none;">
-				  <input type="text" id="message" placeholder="Votre message">
-				  <button id="send">Envoyer</button>
-			</div>
+      .top-bar span {
+        font-weight: bold;
+      }
 
-			<!-- Zone d'affichage des messages -->
-			<ul id="messages"></ul>
+      .wrapper {
+        max-width: 800px;
+        margin: 20px auto;
+      }
 
-			<!-- SDK Firebase + app.js -->
-			<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-			<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-			<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-			<script src="app.js"></script>
-	  </body>
+      .panel {
+        background-color: #f5f5f5;
+        border: 1px solid #b7c5d9;
+        padding: 10px;
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        font-size: 16px;
+        margin: 0 0 10px 0;
+        text-align: center;
+      }
+
+      .field {
+        margin-bottom: 8px;
+        font-size: 12px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .field input {
+        width: 100%;
+        padding: 4px;
+        box-sizing: border-box;
+        border: 1px solid #b7c5d9;
+        background-color: #ffffee;
+        font-size: 12px;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .buttons button {
+        flex: 1;
+        padding: 4px 0;
+        font-size: 12px;
+        border: 1px solid #b7c5d9;
+        background-color: #e0eaf8;
+        cursor: pointer;
+      }
+
+      .buttons button:hover {
+        background-color: #d6e0f0;
+      }
+
+      #logout {
+        margin-top: 8px;
+        width: 100%;
+        padding: 4px 0;
+        font-size: 12px;
+        border: 1px solid #b7c5d9;
+        background-color: #f6d8ce;
+        cursor: pointer;
+        display: none;
+      }
+
+      #logout:hover {
+        background-color: #f2c0b0;
+      }
+
+      #post input {
+        width: 100%;
+        padding: 4px;
+        box-sizing: border-box;
+        border: 1px solid #b7c5d9;
+        background-color: #ffffee;
+        font-size: 12px;
+      }
+
+      #post button {
+        margin-top: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        border: 1px solid #b7c5d9;
+        background-color: #e0eaf8;
+        cursor: pointer;
+      }
+
+      #messages {
+        list-style: none;
+        padding-left: 0;
+        font-size: 12px;
+      }
+
+      #messages li {
+        padding: 4px 6px;
+        border-bottom: 1px solid #ddd;
+        background-color: #ffffee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>5chan</span> - Anonymous imageboard (Firebase demo)
+    </div>
+
+    <div class="wrapper">
+      <!-- Zone d'authentification -->
+      <div class="panel" id="auth">
+        <h1>Login / Signup</h1>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Email" />
+        </div>
+
+        <div class="field">
+          <label for="password">Mot de passe</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Mot de passe"
+          />
+        </div>
+
+        <div class="buttons">
+          <button id="signup">S'inscrire</button>
+          <button id="login">Se connecter</button>
+        </div>
+
+        <button id="logout">Se déconnecter</button>
+      </div>
+
+      <!-- Zone de publication (visible seulement connecté) -->
+      <div class="panel" id="post" style="display: none">
+        <h1>Poster un message</h1>
+        <input type="text" id="message" placeholder="Votre message" />
+        <button id="send">Envoyer</button>
+      </div>
+
+      <!-- Zone d'affichage des messages -->
+      <div class="panel">
+        <h1>Messages du channel principal</h1>
+        <ul id="messages"></ul>
+      </div>
+    </div>
+
+    <!-- SDK Firebase + app.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
