@@ -1,0 +1,165 @@
+
+body {
+	  margin: 0;
+	  padding: 0;
+	  font-family: Arial, sans-serif;
+	  background-color: #f0e0d6;
+}
+
+.top-bar {
+	  background-color: #88b0d8;
+	  padding: 6px 10px;
+	  border-bottom: 1px solid #000;
+	  font-size: 12px;
+}
+
+.top-bar span {
+	  font-weight: bold;
+}
+
+.wrapper {
+	  max-width: 800px;
+	  margin: 20px auto;
+}
+
+.panel {
+	  background-color: #f5f5f5;
+	  border: 1px solid #b7c5d9;
+	  padding: 10px;
+	  margin-bottom: 12px;
+}
+
+h1 {
+	  font-size: 16px;
+	  margin: 0 0 10px 0;
+	  text-align: center;
+}
+
+.field {
+	  margin-bottom: 8px;
+	  font-size: 12px;
+}
+
+.field label {
+	  display: block;
+	  margin-bottom: 2px;
+}
+
+.field input {
+	  width: 100%;
+	  padding: 4px;
+	  box-sizing: border-box;
+	  border: 1px solid #b7c5d9;
+	  background-color: #ffffee;
+	  font-size: 12px;
+}
+
+.buttons {
+	  display: flex;
+	  gap: 8px;
+	  margin-top: 8px;
+}
+
+.buttons button {
+	  flex: 1;
+	  padding: 4px 0;
+	  font-size: 12px;
+	  border: 1px solid #b7c5d9;
+	  background-color: #e0eaf8;
+	  cursor: pointer;
+}
+
+.buttons button:hover {
+	  background-color: #d6e0f0;
+}
+
+#logout {
+	  margin-top: 8px;
+	  width: 100%;
+	  padding: 4px 0;
+	  font-size: 12px;
+	  border: 1px solid #b7c5d9;
+	  background-color: #f6d8ce;
+	  cursor: pointer;
+	  display: none;
+}
+
+#logout:hover {
+	  background-color: #f2c0b0;
+}
+
+#post input {
+	  width: 100%;
+	  padding: 4px;
+	  box-sizing: border-box;
+	  border: 1px solid #b7c5d9;
+	  background-color: #ffffee;
+	  font-size: 12px;
+}
+
+#post button {
+	  margin-top: 6px;
+	  padding: 4px 10px;
+	  font-size: 12px;
+	  border: 1px solid #b7c5d9;
+	  background-color: #e0eaf8;
+	  cursor: pointer;
+}
+
+#messages {
+	  list-style: none;
+	  padding-left: 0;
+	  font-size: 12px;
+}
+
+#messages li {
+	  padding: 4px 6px;
+	  border-bottom: 1px solid #ddd;
+	  background-color: #ffffee;
+}
+
+.user-info {
+	  margin-top: 6px;
+	  font-size: 12px;
+	  color: #004000;
+}
+
+.reply-info {
+	  margin-top: 6px;
+	  font-size: 11px;
+	  color: #555;
+}
+
+.reply-info button {
+	  margin-left: 8px;
+	  font-size: 11px;
+}
+
+.msg-header {
+	  font-weight: bold;
+	  margin-bottom: 2px;
+	  font-size: 12px;
+}
+
+.msg-meta {
+	  font-size: 10px;
+	  color: #777;
+	  margin-left: 4px;
+}
+
+.msg-text {
+	  font-size: 12px;
+	  margin-bottom: 4px;
+}
+
+.msg-actions button {
+	  font-size: 11px;
+	  padding: 2px 6px;
+	  border: 1px solid #b7c5d9;
+	  background-color: #e0eaf8;
+	  cursor: pointer;
+}
+
+.msg-actions button:hover {
+	  background-color: #d6e0f0;
+}

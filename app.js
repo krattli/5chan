@@ -1,4 +1,3 @@
-// Configuration Firebase copiée du site firebase (la console)
 const firebaseConfig = {
   apiKey: "AIzaSyBMhtGTjtGItAjKMxKW1FHuTE4iND3qLYc",
   authDomain: "twitter-1fcd8.firebaseapp.com",
@@ -8,13 +7,12 @@ const firebaseConfig = {
   appId: "1:410848303610:web:8d1666708b7c1cd48aac43",
 };
 
-// Initialisation Firebase (executée quand le script est loadé)
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// --- DOM Elements ---
+// éléments html de la page principale
 const email = document.getElementById("email");
 const password = document.getElementById("password");
 const pseudoInput = document.getElementById("pseudo");
@@ -50,6 +48,7 @@ const PSEUDO_COLORS = [
 ];
 
 // Retourne une couleur prédictible à partir du string du pseudo
+// fonction purement décorative
 function getColorForPseudo(pseudo) {
   if (!pseudo) return "#000000";
   let hash = 0;
