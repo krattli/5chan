@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>5chan - Mini Chat Firebase</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="top-bar">
@@ -10,7 +11,6 @@
     </div>
 
     <div class="wrapper">
-
       <div class="panel" id="auth">
         <h1>Login / Signup</h1>
 
@@ -44,7 +44,6 @@
         <button id="logout">Se déconnecter</button>
       </div>
 
-
       <div class="panel" id="post" style="display: none">
         <h1>Poster un message</h1>
         <input type="text" id="message" placeholder="Votre message" />
@@ -55,13 +54,11 @@
         <button id="send">Envoyer</button>
       </div>
 
-
       <div class="panel">
         <h1>Messages du channel principal</h1>
         <ul id="messages"></ul>
       </div>
     </div>
-
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>

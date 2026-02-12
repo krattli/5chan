@@ -29,7 +29,7 @@ const replyInfo = document.getElementById("replyInfo");
 const replyTargetSpan = document.getElementById("replyTarget");
 const cancelReplyBtn = document.getElementById("cancelReply");
 
-let currentReplyTo = null; // id du message auquel on répond si on réponds à un message
+let currentReplyTo = null; // id du message auquel on répond si on répond à un message
 
 // Palette de couleurs prédéfinies pour les pseudos (12 couleurs)
 const PSEUDO_COLORS = [
@@ -71,8 +71,8 @@ signup.addEventListener("click", async () => {
   const passwordVal = password.value.trim();
   const pseudoVal = pseudoInput.value.trim();
 
-  if (!emailVal || !passwordVal || !pseudoVal) {
-    alert("Email, mot de passe et pseudo sont obligatoires.");
+  if (!emailVal || !passwordVal) {
+    alert("L'email et le mot de passe sont obligatoires.");
     return;
   }
 
@@ -81,19 +81,35 @@ signup.addEventListener("click", async () => {
       emailVal,
       passwordVal
     );
-
-    // Met à jour le profil Firebase Auth avec le pseudo
     await cred.user.updateProfile({ displayName: pseudoVal });
 
-    // Stocke aussi dans une collection users (pratique pour plus tard)
-    await db.collection("users").doc(cred.user.uid).set({
-      pseudo: pseudoVal,
-      email: cred.user.email,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    // Stocke aussi dans la collection users
+    await db
+      .collection("users")
+      .doc(cred.user.uid)
+      .set({
+        pseudo: pseudoVal,
+        email: cred.user.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
   } catch (e) {
-    console.error(e);
-    alert(e.message || "Erreur lors de la création du compte.");
+    let msg = "Erreur lors de la création du compte.";
+    switch (e.code) {
+      case "auth/email-already-in-use":
+        msg = "Cet email est déjà utilisé. Essayez de vous connecter.";
+        break;
+      case "auth/invalid-email":
+        msg = "L'email fourni n'est pas valide.";
+        break;
+      case "auth/weak-password":
+        msg = "Le mot de passe est trop faible (6 caractères minimum).";
+        break;
+      default:
+        if (e.message) {
+          msg = e.message;
+        }
+    }
+    alert(msg);
   }
 });
 
@@ -103,15 +119,37 @@ login.addEventListener("click", async () => {
   const passwordVal = password.value.trim();
 
   if (!emailVal || !passwordVal) {
-    alert("Email et mot de passe obligatoires.");
+    alert("Email et mot de passe sont obligatoires.");
     return;
   }
 
   try {
     await auth.signInWithEmailAndPassword(emailVal, passwordVal);
   } catch (e) {
-    console.error(e);
-    alert(e.message || "Erreur lors de la connexion.");
+    let msg = "Impossible de se connecter. Vérifiez vos identifiants.";
+    switch (e.code) {
+      case "auth/invalid-email":
+        msg = "L'email fourni n'est pas valide.";
+        break;
+      case "auth/user-disabled":
+        msg = "Ce compte a été désactivé. Contactez un administrateur.";
+        break;
+      case "auth/user-not-found":
+        msg = "Aucun compte trouvé pour cet email.";
+        break;
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        msg = "Mot de passe incorrect.";
+        break;
+      case "auth/too-many-requests":
+        msg = "Trop de tentatives échouées. Réessayez plus tard.";
+        break;
+      default:
+        if (e.message) {
+          msg = e.message;
+        }
+    }
+    alert(msg);
   }
 });
 
@@ -126,6 +164,8 @@ logout.addEventListener("click", async () => {
 });
 
 // Gestion de l'état d'authentification
+// Affiche/masque les champs login/signup
+// gère les infos user de quand on envoie un message
 auth.onAuthStateChanged((user) => {
   clearReplyTarget();
 
@@ -143,7 +183,6 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
-// Gestion du ciblage de réponse 
 cancelReplyBtn.addEventListener("click", () => {
   clearReplyTarget();
 });
@@ -156,6 +195,7 @@ function setReplyTarget(messageNode) {
 }
 
 // Envoyer un message (dans le channel principal ou en réponse à un message)
+// le message est déjà écrit et on sait où on l'envoie
 send.addEventListener("click", async () => {
   const text = messageInput.value.trim();
   const user = auth.currentUser;
@@ -183,7 +223,7 @@ send.addEventListener("click", async () => {
   }
 });
 
-// Construction de  l'arbre des messages (toutes les réponses)
+// Construction de l'arbre des messages (toutes les réponses)
 function buildMessageTree(snapshot) {
   const nodes = new Map();
 
@@ -213,7 +253,7 @@ function buildMessageTree(snapshot) {
   // Tri des messages, les plus récents en haut
   roots.sort((a, b) => b.timestamp - a.timestamp);
 
-  // Tri des réponses, plus anciens en haut
+  // Tri des réponses, plus anciennes en haut
   function sortChildren(n) {
     n.children.sort((a, b) => a.timestamp - b.timestamp);
     n.children.forEach(sortChildren);
@@ -223,7 +263,8 @@ function buildMessageTree(snapshot) {
   return roots;
 }
 
-// Rendu d'un messages
+// Rendu d'un message
+// gère aussi le cas où le message a des enfants
 function renderMessage(node, container, depth = 0, hiddenInitially = false) {
   const li = document.createElement("li");
   li.style.marginLeft = depth * 16 + "px";
